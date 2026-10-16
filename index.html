@@ -50,7 +50,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,su
 input[type=number]{font:inherit;width:84px;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
 input.err{border-color:var(--bad);background:var(--badbg)}
 .chip{min-width:80px;font:.82rem "Segoe UI";padding:3px 8px;border-radius:99px;background:var(--accbg);color:var(--acc);text-align:center}
-.chip.f{background:var(--badbg);color:var(--bad)}.chip.e{background:none;color:var(--mute)}
+.chip.n{background:var(--bg);color:var(--warn);border:1px solid var(--warn)}.chip.f{background:var(--badbg);color:var(--bad)}.chip.e{background:none;color:var(--mute)}
 .ccg{grid-column:1/-1;font-size:.88rem;color:var(--mute)}
 .prev{display:grid;grid-template-columns:1fr 110px 110px;gap:8px 12px;align-items:center}
 .res{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
@@ -69,13 +69,13 @@ footer{border-top:1px solid var(--line);padding:22px 16px;text-align:center;colo
 @media print{header,footer,.noprint,.hero{display:none!important}body{background:#fff}}
 </style></head><body>
 <header><div class="bar"><a class="logo" href="#home"><i>CS</i>BS (CS) Grading Portal</a>
-<nav id="nav"><a href="#home">Home</a><a href="#calc">Calculator</a><a href="#planner">Target planner</a><a href="#grades">Grading scale</a><a href="#scheme">Course scheme</a><a href="#faq">FAQ</a></nav></div></header>
+<nav id="nav"><a href="#home">Home</a><a href="#calc">Calculator</a><a href="#planner">Target planner</a><a href="#grades">Grading scale</a><a href="#scheme">Course scheme</a><a href="#rules">Rules</a><a href="#faq">FAQ</a></nav></div></header>
 <main>
 
 <section class="page" id="p-home">
 <div class="hero"><div><h1>Know your GPA before the result sheet does.</h1>
 <p>A GPA and CGPA calculator built on the BS Computer Science study schema (Fall 2025) and the university grading plan. Type your marks; grades and grade points are worked out for you.</p>
-<div class="gp"><span>Theory 93–100 → <b>A 4.00</b></span><span>Lab 46–50 → <b>A 4.00</b></span><span>Pass mark: theory 60, lab 30</span></div>
+<div class="gp"><span>Theory 93–100 → <b>A 4.00</b></span><span>Lab 46–50 → <b>A 4.00</b></span><span>Below 40 → <b>F</b></span><span>40–59 → <b>N</b> (not in GPA)</span></div>
 <div class="row"><a class="btn" href="#calc">Calculate my GPA</a><a class="btn alt" href="#scheme">Browse the course scheme</a></div></div></div>
 <div class="grid">
 <a class="card" href="#calc"><h3>GPA &amp; CGPA calculator</h3><p>Pick your semester, enter theory and lab marks separately, get course-wise grades and your result.</p></a>
@@ -93,7 +93,7 @@ footer{border-top:1px solid var(--line);padding:22px 16px;text-align:center;colo
 <div class="card noprint"><h3>1. Your semester</h3><div class="sems" id="sems"></div></div>
 <div class="card noprint hide" id="modeCard"><h3>2. What do you want to calculate?</h3><div class="seg" id="mode"><button data-m="gpa">This semester’s GPA</button><button data-m="cgpa">CGPA including this semester</button></div></div>
 <div class="card hide" id="prevCard"><h3>Previous semesters’ GPA</h3><p class="note">Credit hours come from the scheme; edit them if yours differ (repeated or dropped courses).</p><div class="prev" id="prev"></div></div>
-<div class="card hide" id="coursesCard"><h3 id="cTitle"></h3><p class="note">Theory out of 100, lab out of 50. Leave a course empty to skip it. Elective names are editable.</p><div id="courses"></div>
+<div class="card hide" id="coursesCard"><h3 id="cTitle"></h3><p class="note">Theory out of 100, lab out of 50. Leave a course empty to skip it. Elective names are editable. Theory 40–59 (lab 20–29) is an N grade: the course is auto-withdrawn and retaken in summer.</p><div id="courses"></div>
 <div class="row noprint"><button class="btn" id="calc">Calculate</button><button class="btn alt" id="reset">Clear marks</button></div></div>
 <div class="card hide" id="resCard"><h3>Result</h3><div class="res" id="res"></div><div id="msgs"></div>
 <div class="row noprint"><button class="btn alt" onclick="print()">Print / save as PDF</button><button class="btn alt" id="copy">Copy summary</button><a class="btn alt" href="#planner">Plan a target</a></div></div>
@@ -112,7 +112,7 @@ footer{border-top:1px solid var(--line);padding:22px 16px;text-align:center;colo
 <section class="page" id="p-grades">
 <h1>Grading scale</h1><p class="lead">Theory courses are marked out of 100 and practical (lab) work out of 50.</p>
 <div class="t2"><div><h3>Theory (100 marks)</h3><table id="tT"></table></div><div><h3>Practical (50 marks)</h3><table id="tP"></table></div></div>
-<div class="card" style="margin-top:18px"><h3>How a course grade point is built</h3><p>A course such as 3(2-3) has 2 theory credits and 1 lab credit (total credits minus the theory number). Each part is graded on its own scale and weighted by credits:<br><b>Course GP = (theory credits × theory GP + lab credits × lab GP) ÷ course credits.</b><br>GPA = Σ(course GP × credits) ÷ Σ credits. CGPA = Σ(semester GPA × credits) ÷ Σ credits.</p></div>
+<div class="card" style="margin-top:18px"><h3>How a course grade point is built</h3><p>A course such as 3(2-3) has 2 theory credits and 1 lab credit (total credits minus the theory number). Each part is graded on its own scale and weighted by credits:<br><b>Course GP = (theory credits × theory GP + lab credits × lab GP) ÷ course credits.</b><br>Marks below 40 are F (0.00; credits stay in GPA until you pass the course). Marks of 40–59 are N: the whole course is auto-withdrawn, left out of GPA and retaken in summer. Lab cut-offs are half: below 20 is F, 20–29 is N.<br>GPA = Σ(course GP × credits) ÷ Σ credits. CGPA = Σ(semester GPA × credits) ÷ Σ credits.</p></div>
 </section>
 
 <section class="page" id="p-scheme">
@@ -122,10 +122,20 @@ footer{border-top:1px solid var(--line);padding:22px 16px;text-align:center;colo
 <table><tr><th>Area</th><th class="c">Credit hours</th><th class="c">Courses</th></tr><tr><td>Computing core</td><td class="c">46</td><td class="c">14</td></tr><tr><td>Domain core</td><td class="c">18</td><td class="c">6</td></tr><tr><td>Domain electives</td><td class="c">21</td><td class="c">7</td></tr><tr><td>Mathematics &amp; supporting</td><td class="c">12</td><td class="c">4</td></tr><tr><td>Elective supporting</td><td class="c">3</td><td class="c">1</td></tr><tr><td>General education</td><td class="c">34</td><td class="c">15</td></tr></table>
 </section>
 
+<section class="page" id="p-rules">
+<h1>Rules &amp; policies</h1><p class="lead">From the Examination Regulations 2024 (Sukkur IBA) and the department’s new N-grade policy.</p>
+<div class="card"><h3>Minimum CGPA</h3><p>You must keep a cumulative CGPA of at least <b>2.2</b>. Below 2.0 you are dropped from the rolls. Between 2.0 and 2.19 you are placed on probation for one semester and must raise your CGPA to 2.2 in the next one, with no semester break. Two continuous probations are allowed if your CGPA improves. A third probation, or a second one that lowers your CGPA while it stays in 2.0–2.19, means you are dropped. If you have failed courses but your CGPA stays at 2.2 or above, you repeat or substitute them before the degree is awarded. GPA is computed every semester, summer included. Final-semester students are dropped only if CGPA falls below 2.0 and have two years to reach 2.2 for the degree.</p></div>
+<div class="card"><h3>N and F grades</h3><p><b>N (theory 40–59, lab 20–29):</b> the course is auto-withdrawn. It is not counted in GPA or CGPA and you retake it in summer.<br><b>F (theory below 40, lab below 20):</b> scores 0.00 and its credit hours stay in GPA. Once you pass the course, the F is no longer counted.<br>Fail theory and you repeat only the theory course; fail the lab and you repeat only the lab. A withdrawal covers both theory and lab.</p></div>
+<div class="card"><h3>Prerequisites</h3><p>You cannot register for a course until its prerequisite is passed.</p><table><tr><th>Course</th><th>Needs</th></tr><tbody id="preBody"></tbody></table></div>
+<div class="card"><h3>Summer, withdrawal and improvement</h3><p>Semesters 1–6: no additional courses in Fall or Spring; up to 3 additional, failure and withdrawal courses in summer. Semesters 7–8 may add courses in regular semesters up to 21 credit hours in total. You may withdraw from one course per semester (two if your previous CGPA is 2.40 or below) within one month of classes starting. Only C+, C and C- grades can be improved, and the higher grade counts.</p></div>
+<div class="card"><h3>Final Year Project</h3><p>FYP-I gets grade I (Incomplete) in semester 7 and is evaluated together with FYP-II in semester 8, so the calculator does not count it in semester 7.</p></div>
+</section>
+
 <section class="page" id="p-faq">
 <h1>FAQ</h1>
-<details open><summary>What do I need to graduate?</summary>At least 134 credit hours and a CGPA of 2.00 or higher on a 4.00 scale. The degree takes a minimum of four years; HEC allows up to seven.</details>
-<details><summary>What marks count as a fail?</summary>Below 60 in a theory course and below 30 in a practical. A failed part earns 0.00 grade points.</details>
+<details open><summary>What do I need to graduate?</summary>At least 134 credit hours and every course passed and a CGPA of at least 2.2 (examination regulations). The degree takes a minimum of four years; HEC allows up to seven.</details>
+<details open><summary>What is an N grade?</summary>N means you were not failed, but the course is auto-withdrawn and you retake it in summer. It is left out of GPA and CGPA completely, grade points and credit hours.</details>
+<details><summary>What marks count as a fail?</summary>Below 40 in theory (below 20 in a lab) is an F and scores 0.00. Marks from 40 to 59 in theory (20 to 29 in a lab) give an N grade: it is not an F, you should improve the subject in summer, and the course is auto-withdrawn and does not affect GPA.</details>
 <details><summary>Why are theory and lab entered separately?</summary>They are graded on different scales (100 and 50 marks) and carry different credit hours, so each gets its own grade before they are combined.</details>
 <details><summary>My semester credits are different from the scheme.</summary>On the calculator, leave out courses you did not take. For previous semesters, edit the credit hours next to each GPA.</details>
 <details><summary>Are Additional Math I and II counted?</summary>No. They are non-credit and are not part of the calculation.</details>
@@ -135,8 +145,8 @@ footer{border-top:1px solid var(--line);padding:22px 16px;text-align:center;colo
 <footer>Unofficial tool based on the BS (CS) study schema, Fall 2025. Your marks stay in your browser and are never sent anywhere.</footer>
 
 <script>
-const TH=[[93,'A',4],[87,'A-',3.67],[82,'B+',3.33],[77,'B',3],[72,'B-',2.67],[68,'C+',2.33],[64,'C',2],[60,'C-',1.67],[0,'F',0]];
-const PR=[[46,'A',4],[44,'A-',3.67],[42,'B+',3.33],[39,'B',3],[37,'B-',2.67],[35,'C+',2.33],[32,'C',2],[30,'C-',1.67],[0,'F',0]];
+const TH=[[93,'A',4],[87,'A-',3.67],[82,'B+',3.33],[77,'B',3],[72,'B-',2.67],[68,'C+',2.33],[64,'C',2],[60,'C-',1.67],[40,'N',null],[0,'F',0]];
+const PR=[[46,'A',4],[44,'A-',3.67],[42,'B+',3.33],[39,'B',3],[37,'B-',2.67],[35,'C+',2.33],[32,'C',2],[30,'C-',1.67],[20,'N',null],[0,'F',0]];
 const grade=(t,m)=>{for(const r of t)if(m>=r[0])return{g:r[1],p:r[2]}};
 const E=(c,n)=>[c,'Elective '+n,2,1,1];
 const SEM={
@@ -146,8 +156,12 @@ const SEM={
 4:[['CS250','Computer Organization & Assembly Language',2,1],['CS251','Theory of Automata',3,0],['CS252','Advanced Database Management Systems',2,1],['CS253','Artificial Intelligence',2,1],['CS254','Information Security',3,0],['MT250','Probability & Statistics',3,0],['GE253/254','Fehm-e-Quran II / Comparative Religion II',1,0]],
 5:[['CS301','Operating Systems',2,1],['CS302','Compiler Construction',2,1],['CS303','Computer Architecture',3,0],E('CS3xx','I'),E('CS3xx','II'),['MT301','Linear Algebra',3,0]],
 6:[['CS350','HCI & Computer Graphics',2,1],['CS351','Parallel & Distributed Computing',2,1],E('CS3xx','III'),E('CS3xx','IV'),['CS352','Analysis of Algorithms',3,0],['EN350','Technical & Business Writing',3,0]],
-7:[['CS401','Final Year Project I',2,0],E('CS4xx','V'),E('CS4xx','VI'),E('CS4xx','VII'),['SS401','Elective Supporting Course',3,0],['GE401','Entrepreneurship',2,0]],
+7:[['CS401','Final Year Project I',2,0,0,'I'],E('CS4xx','V'),E('CS4xx','VI'),E('CS4xx','VII'),['SS401','Elective Supporting Course',3,0],['GE401','Entrepreneurship',2,0]],
 8:[['CS450','Final Year Project II',4,0],['GE450','Social Science I',2,0],['GE451','Arts & Humanities (Professional Practices)',2,0],['GE452','Civics & Community Engagement',2,0]]};
+const PRE={CS150:'CS102',CS201:'CS102',MT201:'GE151',MT301:'GE151',CS250:'CS202',CS252:'CS151',CS302:'CS251',CS303:'CS250',CS351:'CS301',CS352:'CS201',GE152:'GE105',EN350:'GE105',CS450:'CS401'};
+const NM={};Object.values(SEM).flat().forEach(c=>NM[c[0]]=c[1]);
+function deps(code){const out=[],seen=new Set([code]),q=[code];while(q.length){const x=q.shift();for(const k in PRE)if(PRE[k]==x&&!seen.has(k)){seen.add(k);out.push(k);q.push(k)}}return out}
+const crg=s=>SEM[s].filter(c=>!c[5]).reduce((a,c)=>a+c[2]+c[3],0);
 const RN=['','I','II','III','IV','V','VI','VII','VIII'];
 const cr=s=>SEM[s].reduce((a,c)=>a+c[2]+c[3],0);
 const $=id=>document.getElementById(id);
@@ -161,8 +175,9 @@ function route(){const h=(location.hash||'#home').slice(1);const id=$('p-'+h)?h:
 addEventListener('hashchange',route);
 
 /* static pages */
-const fill=(el,t,top)=>{let h='<tr><th>Grade</th><th class="c">Marks</th><th class="c">GP</th></tr>';t.forEach((r,i)=>{h+=`<tr><td>${r[1]=='F'?'Fail':r[1]}</td><td class="c">${r[1]=='F'?'Below '+t[i-1][0]:r[0]+' – '+(i?t[i-1][0]-1:top)}</td><td class="c">${r[2].toFixed(2)}</td></tr>`});el.innerHTML=h};
+const fill=(el,t,top)=>{let h='<tr><th>Grade</th><th class="c">Marks</th><th class="c">GP</th></tr>';t.forEach((r,i)=>{h+=`<tr><td>${r[1]=='F'?'F (Fail)':r[1]=='N'?'N (Withdrawn)':r[1]}</td><td class="c">${r[1]=='F'?'Below '+t[i-1][0]:r[0]+' – '+(i?t[i-1][0]-1:top)}</td><td class="c">${r[2]===null?'Not counted':r[2].toFixed(2)}</td></tr>`});el.innerHTML=h};
 fill($('tT'),TH,100);fill($('tP'),PR,50);
+$('preBody').innerHTML=Object.keys(PRE).map(k=>`<tr><td>${NM[k]} (${k})</td><td>${NM[PRE[k]]} (${PRE[k]})</td></tr>`).join('');
 $('schemeList').innerHTML=Object.keys(SEM).map(s=>`<details${s==1?' open':''}><summary>Semester ${RN[s]} · ${cr(s)} credit hours</summary><table><tr><th>Code</th><th>Course</th><th class="c">Credits</th></tr>${SEM[s].map(c=>`<tr><td>${c[0]}</td><td>${c[1]}</td><td class="c">${fmt(c)}</td></tr>`).join('')}</table><p class="note">Additional Math is non-credit and not listed.${s==5||s==6||s==7?' Electives are chosen from the domain elective list.':''}</p></details>`).join('');
 
 /* calculator */
@@ -173,9 +188,9 @@ function pick(i){sem=i;[...$('sems').children].forEach((b,k)=>b.classList.toggle
  else{$('modeCard').classList.remove('hide');mode='';[...$('mode').children].forEach(b=>b.classList.remove('on'));$('prevCard').classList.add('hide');$('coursesCard').classList.add('hide')}}
 [...$('mode').children].forEach(b=>b.onclick=()=>{mode=b.dataset.m;[...$('mode').children].forEach(x=>x.classList.toggle('on',x==b));build()});
 function build(){$('resCard').classList.add('hide');
- if(mode=='cgpa'){let h='<b>Semester</b><b>GPA</b><b>Credit hrs</b>';for(let s=1;s<sem;s++)h+=`<span>Semester ${s}</span><input type="number" class="pg" min="0" max="4" step="0.01" placeholder="0.00–4.00" aria-label="GPA semester ${s}"><input type="number" class="pcx" min="1" max="30" value="${cr(s)}" aria-label="Credits semester ${s}">`;$('prev').innerHTML=h;$('prevCard').classList.remove('hide')}else $('prevCard').classList.add('hide');
+ if(mode=='cgpa'){let h='<b>Semester</b><b>GPA</b><b>Credit hrs</b>';for(let s=1;s<sem;s++)h+=`<span>Semester ${s}</span><input type="number" class="pg" min="0" max="4" step="0.01" placeholder="0.00–4.00" aria-label="GPA semester ${s}"><input type="number" class="pcx" min="1" max="30" value="${crg(s)}" aria-label="Credits semester ${s}">`;$('prev').innerHTML=h;$('prevCard').classList.remove('hide')}else $('prevCard').classList.add('hide');
  $('cTitle').textContent=(mode=='cgpa'?'Semester '+sem+' marks (current)':'Semester '+sem+' marks');
- $('courses').innerHTML=SEM[sem].map((c,i)=>{const[code,name,tc,lc,ed]=c;
+ $('courses').innerHTML=SEM[sem].map((c,i)=>{const[code,name,tc,lc,ed]=c;if(c[5])return `<div class="course"><div class="ct"><b>${name}</b><small>${code} · ${fmt(c)}</small></div><div class="ccg">Grade I (Incomplete): FYP-I is evaluated with FYP-II in semester 8, so it is not counted in this GPA.</div></div>`;
   const nm=ed?`<input value="${name}" aria-label="Course name">`:`<b>${name}</b>`;
   const t=tc?`<div class="comp"><label>Theory /100</label><div class="cr"><input type="number" class="mt" data-i="${i}" min="0" max="100" step="0.5"><span class="chip e" id="ct${i}">–</span></div></div>`:'';
   const l=lc?`<div class="comp"><label>Lab /50</label><div class="cr"><input type="number" class="ml" data-i="${i}" min="0" max="50" step="0.5"><span class="chip e" id="cl${i}">–</span></div></div>`:'';
@@ -185,18 +200,19 @@ const val=e=>e&&e.value!==''?parseFloat(e.value):null;
 function comp(i,k){const e=document.querySelector(`.${k=='t'?'mt':'ml'}[data-i="${i}"]`);if(!e)return{s:'na'};
  const v=val(e),mx=k=='t'?100:50;if(v===null||isNaN(v)){e.classList.remove('err');return{s:'empty'}}
  if(v<0||v>mx){e.classList.add('err');return{s:'bad'}}e.classList.remove('err');return{s:'ok',...grade(k=='t'?TH:PR,v)}}
-function chip(id,r){const c=$(id);if(!c)return;if(r.s=='ok'){c.textContent=`${r.g} · ${r.p.toFixed(2)}`;c.className='chip'+(r.g=='F'?' f':'')}else if(r.s=='bad'){c.textContent='Invalid';c.className='chip f'}else{c.textContent='–';c.className='chip e'}}
-function course(c,i){const t=comp(i,'t'),l=comp(i,'l'),need=[c[2]?t:0,c[3]?l:0].filter(Boolean);
- const ok=need.every(r=>r.s=='ok');return{t,l,need,ok,bad:need.some(r=>r.s=='bad'),
-  qp:ok?(c[2]?t.p*c[2]:0)+(c[3]?l.p*c[3]:0):0,fail:ok&&need.some(r=>r.g=='F')}}
-function live(){SEM[sem].forEach((c,i)=>{const r=course(c,i);chip('ct'+i,r.t);chip('cl'+i,r.l);
- $('cc'+i).innerHTML=r.ok?`Course GP: <b>${(r.qp/(c[2]+c[3])).toFixed(2)}</b>${r.fail?' · <span style="color:var(--bad)">failed component</span>':''}`:''})}
+function chip(id,r){const c=$(id);if(!c)return;if(r.s=='ok'){c.textContent=r.p===null?'N':`${r.g} · ${r.p.toFixed(2)}`;c.className='chip'+(r.g=='F'?' f':r.g=='N'?' n':'');if(r.g=='N')c.textContent='N · withdrawn'}else if(r.s=='bad'){c.textContent='Invalid';c.className='chip f'}else{c.textContent='–';c.className='chip e'}}
+function course(c,i){const t=comp(i,'t'),l=comp(i,'l'),need=[c[2]?[t,c[2],'theory']:0,c[3]?[l,c[3],'lab']:0].filter(Boolean);
+ const ok=need.every(x=>x[0].s=='ok'),n=ok&&need.some(x=>x[0].g=='N');let qp=0,cc=0;
+ if(ok&&!n)need.forEach(([r,k])=>{qp+=r.p*k;cc+=k});
+ return{t,l,ok,n,qp,cc,bad:need.some(x=>x[0].s=='bad'),failed:ok&&!n?need.filter(x=>x[0].g=='F').map(x=>x[2]):[],cs:ok&&!n?need.filter(x=>['C+','C','C-'].includes(x[0].g)).length:0}}
+function live(){SEM[sem].forEach((c,i)=>{if(c[5])return;const r=course(c,i);chip('ct'+i,r.t);chip('cl'+i,r.l);
+ $('cc'+i).innerHTML=!r.ok?'':r.n?'<span style="color:var(--warn)">N grade: this course is auto-withdrawn and not counted in GPA. Retake it in the summer semester.</span>':`Course GP: <b>${(r.qp/r.cc).toFixed(2)}</b>`+(r.failed.length?` · <span style="color:var(--bad)">F in ${r.failed.join(' and ')}: repeat only that part</span>`:'')})}
 const show=(h,m='',err)=>{$('res').innerHTML=err?'':h;$('msgs').innerHTML=err?h:m;$('resCard').classList.remove('hide');$('resCard').scrollIntoView({behavior:'smooth',block:'nearest'})};
-$('calc').onclick=()=>{let qp=0,c0=0,skip=[],fails=[];
- for(let i=0;i<SEM[sem].length;i++){const c=SEM[sem][i],r=course(c,i);
+$('calc').onclick=()=>{let qp=0,c0=0,skip=[],fails=[],ns=[],retake=[],imp=[];
+ for(let i=0;i<SEM[sem].length;i++){const c=SEM[sem][i];if(c[5])continue;const r=course(c,i);
   if(r.bad)return show('<div class="msg">Some marks are out of range. Theory is 0–100 and lab is 0–50.</div>','',1);
-  if(r.ok){qp+=r.qp;c0+=c[2]+c[3];if(r.fail)fails.push(c[0])}else skip.push(c[0])}
- if(!c0)return show('<div class="msg">Enter marks for at least one complete course.</div>','',1);
+  if(r.ok){qp+=r.qp;c0+=r.cc;if(r.n){ns.push(c[0]);retake.push([c,'N',c[3]?['theory','lab']:['theory']])}else if(r.failed.length){fails.push(c[0]);retake.push([c,'F',r.failed])}if(r.cs)imp.push(c[0])}else skip.push(c[0])}
+ if(!c0)return show(ns.length?'<div class="msg w">All entered courses have an N grade, so nothing counts towards GPA yet. Improve them in summer.</div>':'<div class="msg">Enter marks for at least one complete course.</div>','',1);
  const gpa=qp/c0;let h=`<div class="big"><span>Semester ${sem} GPA</span><strong>${gpa.toFixed(2)}</strong></div><div class="big o"><span>Credit hours counted</span><strong>${c0}</strong></div><div class="big o"><span>Quality points</span><strong>${qp.toFixed(2)}</strong></div>`;
  last=`Semester ${sem} GPA: ${gpa.toFixed(2)} (${c0} cr)`;let top=gpa,tag='GPA';window._cg={q:qp,c:c0};
  if(mode=='cgpa'){const gs=[...document.querySelectorAll('.pg')],cs=[...document.querySelectorAll('.pcx')];let pq=0,pc=0;
@@ -204,8 +220,12 @@ $('calc').onclick=()=>{let qp=0,c0=0,skip=[],fails=[];
   top=(pq+qp)/(pc+c0);tag='CGPA';window._cg={q:pq+qp,c:pc+c0};
   h+=`<div class="big"><span>CGPA after semester ${sem}</span><strong>${top.toFixed(2)}</strong></div><div class="big o"><span>Total credit hours</span><strong>${pc+c0}</strong></div>`;last+=`\nCGPA: ${top.toFixed(2)} (${pc+c0} cr)`}
  let m='';if(skip.length)m+=`<div class="msg w">Not counted (incomplete): ${skip.join(', ')}.</div>`;
- if(fails.length)m+=`<div class="msg">Failed component in: ${fails.join(', ')}. That part scores 0.00 (theory below 60, lab below 30).</div>`;
- m+=top>=2?`<div class="msg ok">Your ${tag} is above the 2.00 minimum required for the degree.</div>`:`<div class="msg">Your ${tag} is below the 2.00 minimum required for the degree.</div>`;show(h,m)};
+ if(retake.length)m+=`<div class="msg" style="background:var(--card);border:1px solid var(--bad)"><b>Courses you must take again</b><ul>${retake.map(([c,k,parts])=>{const d=deps(c[0]);return `<li><b>${c[0]} · ${c[1]}</b>: ${k=='N'?'N grade, auto-withdrawn. Retake the whole course ('+parts.join(' and ')+') in summer.':'F in '+parts.join(' and ')+'. Repeat only the '+parts.join(' and ')+' part.'}${d.length?`<br><i>Prerequisite block: you cannot take ${d.map(x=>NM[x]+' ('+x+')').join(', ')} until you pass this course.</i>`:''}</li>`}).join('')}</ul><span class="note">Summer allows up to 3 additional, failure and withdrawal courses.</span></div>`;
+ if(imp.length)m+=`<div class="msg w">Grade improvement is allowed only for C+, C and C- grades. Eligible here: ${imp.join(', ')}.</div>`;
+ if(mode=='cgpa'){const lastSem=sem==8;
+  m+=top>=2.2?`<div class="msg ok">Your CGPA meets the 2.2 minimum.</div>`:top>=2?`<div class="msg">CGPA ${top.toFixed(2)} is below 2.2: you would be on probation. Raise it to 2.2 in the next semester, with no semester break. Two continuous probations are allowed only while your CGPA improves; a third, or a second that lowers it, means being dropped.${lastSem?' As a final-semester student you are not dropped above 2.0 and have two years to reach 2.2 for the degree.':''}</div>`:`<div class="msg">CGPA ${top.toFixed(2)} is below 2.0. ${lastSem?'Final-semester students are dropped only below 2.0, and this is that case.':'Students below 2.0 are dropped from the rolls.'}</div>`}
+ else m+=`<div class="msg w">Probation and drop rules apply to CGPA (minimum 2.2). Use the CGPA option to check where you stand.</div>`;
+ show(h,m)};
 $('reset').onclick=()=>{document.querySelectorAll('#courses input[type=number]').forEach(i=>{i.value='';i.classList.remove('err')});live();$('resCard').classList.add('hide')};
 $('copy').onclick=()=>navigator.clipboard&&navigator.clipboard.writeText(last).then(()=>$('copy').textContent='Copied');
 
