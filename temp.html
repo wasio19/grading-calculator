@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BS (CS) Grading Portal – GPA & CGPA Calculator</title>
+<style>
+:root{--bg:#f3f1ec;--card:#fff;--ink:#16233a;--mute:#5f6b7d;--line:#dcd8cf;--acc:#12594f;--accbg:#dcefe9;--hero:#16233a;--herot:#f3f1ec;--gold:#d9a441;--bad:#b42318;--badbg:#fde8e6;--warn:#8a5a00;--onacc:#fff}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1520;--card:#172030;--ink:#e8ecf3;--mute:#9aa7bb;--line:#2a364a;--acc:#4fcdb9;--accbg:#143a36;--hero:#0a0f18;--herot:#e8ecf3;--bad:#ff8f84;--badbg:#3a1a18;--warn:#f0b955;--onacc:#06201c}}
+*{box-sizing:border-box}html{scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Georgia,"Times New Roman",serif}
+h1,h2,h3,nav,button,input,label,th,.ui{font-family:"Segoe UI",system-ui,sans-serif}
+a{color:var(--acc)}
+header{position:sticky;top:0;z-index:5;background:var(--hero);color:var(--herot);padding:env(safe-area-inset-top) 0 0}
+.bar{max-width:1000px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.logo{font:700 1.1rem "Segoe UI",sans-serif;color:var(--herot);text-decoration:none;display:flex;gap:8px;align-items:center}
+.logo i{background:var(--gold);color:#16233a;border-radius:6px;padding:2px 7px;font-style:normal}
+nav{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+nav a{color:var(--herot);text-decoration:none;padding:6px 11px;border-radius:6px;font-size:.92rem;opacity:.85}
+nav a.on,nav a:hover{background:rgba(255,255,255,.14);opacity:1}
+main{max-width:1000px;margin:0 auto;padding:24px 16px 50px}
+.page{display:none}.page.on{display:block}
+h1{font-size:2.3rem;line-height:1.15;margin:0 0 .3em}h2{font-size:1.5rem;margin:0 0 .3em}h3{font-size:1.05rem;margin:0 0 8px}
+.lead{color:var(--mute);max-width:62ch}
+.hero{background:var(--hero);color:var(--herot);margin:-24px -16px 28px;padding:48px 16px 44px}
+.hero>div{max-width:1000px;margin:0 auto}.hero p{max-width:56ch;opacity:.85}
+.hero .gp{display:flex;gap:6px;margin:22px 0 0;flex-wrap:wrap}
+.hero .gp span{border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:6px 12px;font:600 .9rem "Segoe UI",sans-serif}
+.hero .gp b{color:var(--gold)}
+.btn{font:600 1rem "Segoe UI",sans-serif;padding:11px 20px;border-radius:8px;border:0;background:var(--acc);color:var(--onacc);cursor:pointer;text-decoration:none;display:inline-block}
+.btn.alt{background:transparent;color:inherit;border:1px solid var(--line)}
+.hero .btn{background:var(--gold);color:#16233a}.hero .btn.alt{background:transparent;color:var(--herot);border-color:rgba(255,255,255,.35)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:14px}
+.card p{margin:0;color:var(--mute);font-size:.95rem}
+a.card{text-decoration:none;color:var(--ink);display:block}a.card:hover{border-color:var(--acc)}
+.steps{counter-reset:s;padding:0;list-style:none;display:grid;gap:10px}
+.steps li{counter-increment:s;padding-left:44px;position:relative}
+.steps li:before{content:counter(s);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;background:var(--accbg);color:var(--acc);font:700 .95rem "Segoe UI";display:grid;place-items:center}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.sems{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
+.sems button,.seg button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;padding:10px 0;cursor:pointer}
+.seg{display:flex;gap:8px;flex-wrap:wrap}.seg button{padding:10px 16px}
+.sems button.on,.seg button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.hide{display:none!important}
+.course{display:grid;grid-template-columns:1fr auto;gap:8px 16px;padding:14px 0;border-top:1px solid var(--line)}
+.course:first-child{border-top:0}
+.ct b{display:block}.ct small,.note{color:var(--mute);font-size:.85rem}
+.ct input{font:inherit;border:0;border-bottom:1px dashed var(--mute);background:transparent;color:var(--ink);width:100%}
+.comps{display:flex;gap:14px;flex-wrap:wrap}.comp label{font-size:.8rem;color:var(--mute);display:block}
+.cr{display:flex;gap:8px;align-items:center}
+input[type=number]{font:inherit;width:84px;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+input.err{border-color:var(--bad);background:var(--badbg)}
+.chip{min-width:80px;font:.82rem "Segoe UI";padding:3px 8px;border-radius:99px;background:var(--accbg);color:var(--acc);text-align:center}
+.chip.f{background:var(--badbg);color:var(--bad)}.chip.e{background:none;color:var(--mute)}
+.ccg{grid-column:1/-1;font-size:.88rem;color:var(--mute)}
+.prev{display:grid;grid-template-columns:1fr 110px 110px;gap:8px 12px;align-items:center}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.big{padding:14px;border-radius:8px;background:var(--accbg)}.big span{display:block;font:.82rem "Segoe UI";color:var(--mute)}
+.big strong{font:700 2.3rem/1.1 "Segoe UI";color:var(--acc)}.big.o{background:var(--bg)}.big.o strong{color:var(--ink);font-size:1.5rem}
+.msg{padding:10px 12px;border-radius:8px;margin-top:10px;background:var(--badbg);color:var(--bad);font:.92rem "Segoe UI"}
+.msg.ok{background:var(--accbg);color:var(--acc)}.msg.w{background:var(--bg);color:var(--warn)}
+table{border-collapse:collapse;width:100%;font:.9rem "Segoe UI",sans-serif}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left}th{background:var(--bg)}td.c,th.c{text-align:center}
+.t2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+details{border:1px solid var(--line);border-radius:8px;background:var(--card);margin-bottom:10px;padding:10px 14px}
+summary{cursor:pointer;font:600 1rem "Segoe UI"}details[open] summary{margin-bottom:10px}
+.pl{display:flex;gap:12px;flex-wrap:wrap;align-items:end}.pl label{font-size:.85rem;color:var(--mute)}.pl input{display:block;margin-top:3px}
+footer{border-top:1px solid var(--line);padding:22px 16px;text-align:center;color:var(--mute);font:.85rem "Segoe UI"}
+@media(max-width:640px){.sems{grid-template-columns:repeat(4,1fr)}.t2{grid-template-columns:1fr}h1{font-size:1.8rem}.prev{grid-template-columns:1fr 90px 90px}nav{margin-left:0}}
+@media print{header,footer,.noprint,.hero{display:none!important}body{background:#fff}}
+</style></head><body>
+<header><div class="bar"><a class="logo" href="#home"><i>CS</i>BS (CS) Grading Portal</a>
+<nav id="nav"><a href="#home">Home</a><a href="#calc">Calculator</a><a href="#planner">Target planner</a><a href="#grades">Grading scale</a><a href="#scheme">Course scheme</a><a href="#faq">FAQ</a></nav></div></header>
+<main>
+
+<section class="page" id="p-home">
+<div class="hero"><div><h1>Know your GPA before the result sheet does.</h1>
+<p>A GPA and CGPA calculator built on the BS Computer Science study schema (Fall 2025) and the university grading plan. Type your marks; grades and grade points are worked out for you.</p>
+<div class="gp"><span>Theory 93–100 → <b>A 4.00</b></span><span>Lab 46–50 → <b>A 4.00</b></span><span>Pass mark: theory 60, lab 30</span></div>
+<div class="row"><a class="btn" href="#calc">Calculate my GPA</a><a class="btn alt" href="#scheme">Browse the course scheme</a></div></div></div>
+<div class="grid">
+<a class="card" href="#calc"><h3>GPA &amp; CGPA calculator</h3><p>Pick your semester, enter theory and lab marks separately, get course-wise grades and your result.</p></a>
+<a class="card" href="#planner"><h3>Target planner</h3><p>Find the GPA you need next semester to reach the CGPA you want.</p></a>
+<a class="card" href="#grades"><h3>Grading scale</h3><p>Theory (100) and practical (50) mark ranges with grade points.</p></a>
+<a class="card" href="#scheme"><h3>Course scheme</h3><p>All eight semesters, credit hours and the 134-credit degree structure.</p></a></div>
+<h2 style="margin-top:26px">How it works</h2>
+<ol class="steps"><li><b>Choose your semester.</b> Semester 1 gives a GPA only. From semester 2 you can choose GPA or CGPA.</li>
+<li><b>Enter marks.</b> Courses with a lab get two boxes, theory out of 100 and lab out of 50.</li>
+<li><b>Read the result.</b> You get the grade for every part, the course GP, the semester GPA and, if chosen, your CGPA.</li></ol>
+</section>
+
+<section class="page" id="p-calc">
+<h1>GPA &amp; CGPA calculator</h1><p class="lead">Enter marks only. Grades follow the grading plan for theory (100) and practical (50).</p>
+<div class="card noprint"><h3>1. Your semester</h3><div class="sems" id="sems"></div></div>
+<div class="card noprint hide" id="modeCard"><h3>2. What do you want to calculate?</h3><div class="seg" id="mode"><button data-m="gpa">This semester’s GPA</button><button data-m="cgpa">CGPA including this semester</button></div></div>
+<div class="card hide" id="prevCard"><h3>Previous semesters’ GPA</h3><p class="note">Credit hours come from the scheme; edit them if yours differ (repeated or dropped courses).</p><div class="prev" id="prev"></div></div>
+<div class="card hide" id="coursesCard"><h3 id="cTitle"></h3><p class="note">Theory out of 100, lab out of 50. Leave a course empty to skip it. Elective names are editable.</p><div id="courses"></div>
+<div class="row noprint"><button class="btn" id="calc">Calculate</button><button class="btn alt" id="reset">Clear marks</button></div></div>
+<div class="card hide" id="resCard"><h3>Result</h3><div class="res" id="res"></div><div id="msgs"></div>
+<div class="row noprint"><button class="btn alt" onclick="print()">Print / save as PDF</button><button class="btn alt" id="copy">Copy summary</button><a class="btn alt" href="#planner">Plan a target</a></div></div>
+</section>
+
+<section class="page" id="p-planner">
+<h1>Target planner</h1><p class="lead">Work out the GPA you need in your next semester to reach a target CGPA.</p>
+<div class="card"><div class="pl">
+<label>Current CGPA<input type="number" id="pc" min="0" max="4" step="0.01"></label>
+<label>Credits completed<input type="number" id="pcr" min="1" max="140"></label>
+<label>Target CGPA<input type="number" id="pt" min="0" max="4" step="0.01" value="3.00"></label>
+<label>Next semester credits<input type="number" id="pn" min="1" max="30" value="18"></label>
+<button class="btn" id="plan">Work it out</button></div><div id="planOut"></div></div>
+</section>
+
+<section class="page" id="p-grades">
+<h1>Grading scale</h1><p class="lead">Theory courses are marked out of 100 and practical (lab) work out of 50.</p>
+<div class="t2"><div><h3>Theory (100 marks)</h3><table id="tT"></table></div><div><h3>Practical (50 marks)</h3><table id="tP"></table></div></div>
+<div class="card" style="margin-top:18px"><h3>How a course grade point is built</h3><p>A course such as 3(2-3) has 2 theory credits and 1 lab credit (total credits minus the theory number). Each part is graded on its own scale and weighted by credits:<br><b>Course GP = (theory credits × theory GP + lab credits × lab GP) ÷ course credits.</b><br>GPA = Σ(course GP × credits) ÷ Σ credits. CGPA = Σ(semester GPA × credits) ÷ Σ credits.</p></div>
+</section>
+
+<section class="page" id="p-scheme">
+<h1>Course scheme</h1><p class="lead">Semester-wise plan from the Fall 2025 BS (CS) schema. Format 3(2-3) means 3 credits: 2 theory and 3 lab contact hours.</p>
+<div id="schemeList"></div>
+<h3 style="margin-top:20px">Credit hour distribution (134 total)</h3>
+<table><tr><th>Area</th><th class="c">Credit hours</th><th class="c">Courses</th></tr><tr><td>Computing core</td><td class="c">46</td><td class="c">14</td></tr><tr><td>Domain core</td><td class="c">18</td><td class="c">6</td></tr><tr><td>Domain electives</td><td class="c">21</td><td class="c">7</td></tr><tr><td>Mathematics &amp; supporting</td><td class="c">12</td><td class="c">4</td></tr><tr><td>Elective supporting</td><td class="c">3</td><td class="c">1</td></tr><tr><td>General education</td><td class="c">34</td><td class="c">15</td></tr></table>
+</section>
+
+<section class="page" id="p-faq">
+<h1>FAQ</h1>
+<details open><summary>What do I need to graduate?</summary>At least 134 credit hours and a CGPA of 2.00 or higher on a 4.00 scale. The degree takes a minimum of four years; HEC allows up to seven.</details>
+<details><summary>What marks count as a fail?</summary>Below 60 in a theory course and below 30 in a practical. A failed part earns 0.00 grade points.</details>
+<details><summary>Why are theory and lab entered separately?</summary>They are graded on different scales (100 and 50 marks) and carry different credit hours, so each gets its own grade before they are combined.</details>
+<details><summary>My semester credits are different from the scheme.</summary>On the calculator, leave out courses you did not take. For previous semesters, edit the credit hours next to each GPA.</details>
+<details><summary>Are Additional Math I and II counted?</summary>No. They are non-credit and are not part of the calculation.</details>
+<details><summary>Is this official?</summary>No. It is a student tool based on the published schema and grading plan. Your university’s result sheet is the final word.</details>
+</section>
+</main>
+<footer>Unofficial tool based on the BS (CS) study schema, Fall 2025. Your marks stay in your browser and are never sent anywhere.</footer>
+
+<script>
+const TH=[[93,'A',4],[87,'A-',3.67],[82,'B+',3.33],[77,'B',3],[72,'B-',2.67],[68,'C+',2.33],[64,'C',2],[60,'C-',1.67],[0,'F',0]];
+const PR=[[46,'A',4],[44,'A-',3.67],[42,'B+',3.33],[39,'B',3],[37,'B-',2.67],[35,'C+',2.33],[32,'C',2],[30,'C-',1.67],[0,'F',0]];
+const grade=(t,m)=>{for(const r of t)if(m>=r[0])return{g:r[1],p:r[2]}};
+const E=(c,n)=>[c,'Elective '+n,2,1,1];
+const SEM={
+1:[['CS102','Programming Fundamentals',3,1],['GE101','Application of ICT',2,1],['GE102/103','Islamic Studies / Ethics',2,0],['GE106','Pakistan Studies',2,0],['GE104','Discrete Structures',3,0],['GE105','Functional English',3,0]],
+2:[['CS150','Object Oriented Programming',3,1],['CS151','Database Systems',3,1],['GE150','Applied Physics',2,1],['GE151','Calculus & Analytic Geometry',3,0],['GE152','Expository Writing',3,0],['GE153/154','Fehm-e-Quran I / Comparative Religion I',1,0]],
+3:[['CS201','Data Structures',3,1],['MT201','Multivariate Calculus',3,0],['CS202','Digital Logic Design',2,1],['CS203','Computer Networks',2,1],['CS204','Software Engineering',3,0],['GE201','Ideology & Constitution of Pakistan',2,0]],
+4:[['CS250','Computer Organization & Assembly Language',2,1],['CS251','Theory of Automata',3,0],['CS252','Advanced Database Management Systems',2,1],['CS253','Artificial Intelligence',2,1],['CS254','Information Security',3,0],['MT250','Probability & Statistics',3,0],['GE253/254','Fehm-e-Quran II / Comparative Religion II',1,0]],
+5:[['CS301','Operating Systems',2,1],['CS302','Compiler Construction',2,1],['CS303','Computer Architecture',3,0],E('CS3xx','I'),E('CS3xx','II'),['MT301','Linear Algebra',3,0]],
+6:[['CS350','HCI & Computer Graphics',2,1],['CS351','Parallel & Distributed Computing',2,1],E('CS3xx','III'),E('CS3xx','IV'),['CS352','Analysis of Algorithms',3,0],['EN350','Technical & Business Writing',3,0]],
+7:[['CS401','Final Year Project I',2,0],E('CS4xx','V'),E('CS4xx','VI'),E('CS4xx','VII'),['SS401','Elective Supporting Course',3,0],['GE401','Entrepreneurship',2,0]],
+8:[['CS450','Final Year Project II',4,0],['GE450','Social Science I',2,0],['GE451','Arts & Humanities (Professional Practices)',2,0],['GE452','Civics & Community Engagement',2,0]]};
+const RN=['','I','II','III','IV','V','VI','VII','VIII'];
+const cr=s=>SEM[s].reduce((a,c)=>a+c[2]+c[3],0);
+const $=id=>document.getElementById(id);
+const fmt=c=>{const t=c[2]+c[3];return c[3]?`${t}(${c[2]}-${c[3]*3})`:`${t}(${c[2]}-0)`};
+
+/* router */
+function route(){const h=(location.hash||'#home').slice(1);const id=$('p-'+h)?h:'home';
+ document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.id=='p-'+id));
+ document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')=='#'+id));
+ scrollTo(0,0);if(id=='planner'&&window._cg&&!$('pc').value){$('pc').value=(_cg.q/_cg.c).toFixed(2);$('pcr').value=_cg.c}}
+addEventListener('hashchange',route);
+
+/* static pages */
+const fill=(el,t,top)=>{let h='<tr><th>Grade</th><th class="c">Marks</th><th class="c">GP</th></tr>';t.forEach((r,i)=>{h+=`<tr><td>${r[1]=='F'?'Fail':r[1]}</td><td class="c">${r[1]=='F'?'Below '+t[i-1][0]:r[0]+' – '+(i?t[i-1][0]-1:top)}</td><td class="c">${r[2].toFixed(2)}</td></tr>`});el.innerHTML=h};
+fill($('tT'),TH,100);fill($('tP'),PR,50);
+$('schemeList').innerHTML=Object.keys(SEM).map(s=>`<details${s==1?' open':''}><summary>Semester ${RN[s]} · ${cr(s)} credit hours</summary><table><tr><th>Code</th><th>Course</th><th class="c">Credits</th></tr>${SEM[s].map(c=>`<tr><td>${c[0]}</td><td>${c[1]}</td><td class="c">${fmt(c)}</td></tr>`).join('')}</table><p class="note">Additional Math is non-credit and not listed.${s==5||s==6||s==7?' Electives are chosen from the domain elective list.':''}</p></details>`).join('');
+
+/* calculator */
+let sem=0,mode='',last='';
+for(let i=1;i<=8;i++){const b=document.createElement('button');b.textContent=i;b.setAttribute('aria-label','Semester '+i);b.onclick=()=>pick(i);$('sems').appendChild(b)}
+function pick(i){sem=i;[...$('sems').children].forEach((b,k)=>b.classList.toggle('on',k+1==i));$('resCard').classList.add('hide');
+ if(i==1){mode='gpa';$('modeCard').classList.add('hide');build()}
+ else{$('modeCard').classList.remove('hide');mode='';[...$('mode').children].forEach(b=>b.classList.remove('on'));$('prevCard').classList.add('hide');$('coursesCard').classList.add('hide')}}
+[...$('mode').children].forEach(b=>b.onclick=()=>{mode=b.dataset.m;[...$('mode').children].forEach(x=>x.classList.toggle('on',x==b));build()});
+function build(){$('resCard').classList.add('hide');
+ if(mode=='cgpa'){let h='<b>Semester</b><b>GPA</b><b>Credit hrs</b>';for(let s=1;s<sem;s++)h+=`<span>Semester ${s}</span><input type="number" class="pg" min="0" max="4" step="0.01" placeholder="0.00–4.00" aria-label="GPA semester ${s}"><input type="number" class="pcx" min="1" max="30" value="${cr(s)}" aria-label="Credits semester ${s}">`;$('prev').innerHTML=h;$('prevCard').classList.remove('hide')}else $('prevCard').classList.add('hide');
+ $('cTitle').textContent=(mode=='cgpa'?'Semester '+sem+' marks (current)':'Semester '+sem+' marks');
+ $('courses').innerHTML=SEM[sem].map((c,i)=>{const[code,name,tc,lc,ed]=c;
+  const nm=ed?`<input value="${name}" aria-label="Course name">`:`<b>${name}</b>`;
+  const t=tc?`<div class="comp"><label>Theory /100</label><div class="cr"><input type="number" class="mt" data-i="${i}" min="0" max="100" step="0.5"><span class="chip e" id="ct${i}">–</span></div></div>`:'';
+  const l=lc?`<div class="comp"><label>Lab /50</label><div class="cr"><input type="number" class="ml" data-i="${i}" min="0" max="50" step="0.5"><span class="chip e" id="cl${i}">–</span></div></div>`:'';
+  return `<div class="course"><div class="ct">${nm}<small>${code} · ${fmt(c)}</small></div><div class="comps">${t}${l}</div><div class="ccg" id="cc${i}"></div></div>`}).join('');
+ $('courses').oninput=live;$('coursesCard').classList.remove('hide')}
+const val=e=>e&&e.value!==''?parseFloat(e.value):null;
+function comp(i,k){const e=document.querySelector(`.${k=='t'?'mt':'ml'}[data-i="${i}"]`);if(!e)return{s:'na'};
+ const v=val(e),mx=k=='t'?100:50;if(v===null||isNaN(v)){e.classList.remove('err');return{s:'empty'}}
+ if(v<0||v>mx){e.classList.add('err');return{s:'bad'}}e.classList.remove('err');return{s:'ok',...grade(k=='t'?TH:PR,v)}}
+function chip(id,r){const c=$(id);if(!c)return;if(r.s=='ok'){c.textContent=`${r.g} · ${r.p.toFixed(2)}`;c.className='chip'+(r.g=='F'?' f':'')}else if(r.s=='bad'){c.textContent='Invalid';c.className='chip f'}else{c.textContent='–';c.className='chip e'}}
+function course(c,i){const t=comp(i,'t'),l=comp(i,'l'),need=[c[2]?t:0,c[3]?l:0].filter(Boolean);
+ const ok=need.every(r=>r.s=='ok');return{t,l,need,ok,bad:need.some(r=>r.s=='bad'),
+  qp:ok?(c[2]?t.p*c[2]:0)+(c[3]?l.p*c[3]:0):0,fail:ok&&need.some(r=>r.g=='F')}}
+function live(){SEM[sem].forEach((c,i)=>{const r=course(c,i);chip('ct'+i,r.t);chip('cl'+i,r.l);
+ $('cc'+i).innerHTML=r.ok?`Course GP: <b>${(r.qp/(c[2]+c[3])).toFixed(2)}</b>${r.fail?' · <span style="color:var(--bad)">failed component</span>':''}`:''})}
+const show=(h,m='',err)=>{$('res').innerHTML=err?'':h;$('msgs').innerHTML=err?h:m;$('resCard').classList.remove('hide');$('resCard').scrollIntoView({behavior:'smooth',block:'nearest'})};
+$('calc').onclick=()=>{let qp=0,c0=0,skip=[],fails=[];
+ for(let i=0;i<SEM[sem].length;i++){const c=SEM[sem][i],r=course(c,i);
+  if(r.bad)return show('<div class="msg">Some marks are out of range. Theory is 0–100 and lab is 0–50.</div>','',1);
+  if(r.ok){qp+=r.qp;c0+=c[2]+c[3];if(r.fail)fails.push(c[0])}else skip.push(c[0])}
+ if(!c0)return show('<div class="msg">Enter marks for at least one complete course.</div>','',1);
+ const gpa=qp/c0;let h=`<div class="big"><span>Semester ${sem} GPA</span><strong>${gpa.toFixed(2)}</strong></div><div class="big o"><span>Credit hours counted</span><strong>${c0}</strong></div><div class="big o"><span>Quality points</span><strong>${qp.toFixed(2)}</strong></div>`;
+ last=`Semester ${sem} GPA: ${gpa.toFixed(2)} (${c0} cr)`;let top=gpa,tag='GPA';window._cg={q:qp,c:c0};
+ if(mode=='cgpa'){const gs=[...document.querySelectorAll('.pg')],cs=[...document.querySelectorAll('.pcx')];let pq=0,pc=0;
+  for(let k=0;k<gs.length;k++){const g=val(gs[k]),c=val(cs[k]);if(g===null||isNaN(g)||g<0||g>4||!c||c<=0){gs[k].classList.add('err');return show('<div class="msg">Enter a valid GPA (0–4) and credit hours for every previous semester.</div>','',1)}gs[k].classList.remove('err');pq+=g*c;pc+=c}
+  top=(pq+qp)/(pc+c0);tag='CGPA';window._cg={q:pq+qp,c:pc+c0};
+  h+=`<div class="big"><span>CGPA after semester ${sem}</span><strong>${top.toFixed(2)}</strong></div><div class="big o"><span>Total credit hours</span><strong>${pc+c0}</strong></div>`;last+=`\nCGPA: ${top.toFixed(2)} (${pc+c0} cr)`}
+ let m='';if(skip.length)m+=`<div class="msg w">Not counted (incomplete): ${skip.join(', ')}.</div>`;
+ if(fails.length)m+=`<div class="msg">Failed component in: ${fails.join(', ')}. That part scores 0.00 (theory below 60, lab below 30).</div>`;
+ m+=top>=2?`<div class="msg ok">Your ${tag} is above the 2.00 minimum required for the degree.</div>`:`<div class="msg">Your ${tag} is below the 2.00 minimum required for the degree.</div>`;show(h,m)};
+$('reset').onclick=()=>{document.querySelectorAll('#courses input[type=number]').forEach(i=>{i.value='';i.classList.remove('err')});live();$('resCard').classList.add('hide')};
+$('copy').onclick=()=>navigator.clipboard&&navigator.clipboard.writeText(last).then(()=>$('copy').textContent='Copied');
+
+/* planner */
+$('plan').onclick=()=>{const g=parseFloat($('pc').value),c=parseFloat($('pcr').value),t=parseFloat($('pt').value),n=parseFloat($('pn').value);
+ if([g,c,t,n].some(isNaN)||g<0||g>4||t<0||t>4||c<=0||n<=0)return $('planOut').innerHTML='<div class="msg">Fill every field: CGPA and target between 0 and 4, credits above 0.</div>';
+ const need=(t*(c+n)-g*c)/n;
+ $('planOut').innerHTML=need>4?`<div class="msg">A ${t.toFixed(2)} CGPA is out of reach in one semester (it needs a GPA of ${need.toFixed(2)}). Try a lower target or plan over two semesters.</div>`:`<div class="msg ok">You need a GPA of <b>${Math.max(need,0).toFixed(2)}</b> over ${n} credits to reach a ${t.toFixed(2)} CGPA.</div>`};
+route();
+</script></body></html>
